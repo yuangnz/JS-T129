@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Estadística de Pesos de Alumnos</title>
+</head>
+<body>
+    <h1>Estadística de Pesos de Alumnos</h1>
+
+    <form id="formulario">
+        <label for="peso">Ingrese el peso del alumno en kg:</label>
+        <input type="number" id="peso" min="0" step="0.01">
+        <button type="button" onclick="agregarAlumno()">Agregar Alumno</button>
+    </form>
+
+    <h2>Estadísticas</h2>
+    <p>Alumnos de menos de 40kg: <span id="menosDe40kg">0</span></p>
+    <p>Alumnos entre 40kg y 50kg: <span id="entre40y50kg">0</span></p>
+    <p>Alumnos de más de 50kg y menos de 60kg: <span id="entre50y60kg">0</span></p>
+    <p>Alumnos de más o igual a 60kg: <span id="masDe60kg">0</span></p>
+
+    <script>
+        const pesos = {
+            menosDe40kg: 0,
+            entre40y50kg: 0,
+            entre50y60kg: 0,
+            masDe60kg: 0
+        };
+
+        function agregarAlumno() {
+            const pesoInput = document.getElementById('peso');
+            const peso = parseFloat(pesoInput.value);
+
+            if (!isNaN(peso)) {
+                if (peso < 40) {
+                    pesos.menosDe40kg++;
+                } else if (peso >= 40 && peso <= 50) {
+                    pesos.entre40y50kg++;
+                } else if (peso > 50 && peso < 60) {
+                    pesos.entre50y60kg++;
+                } else {
+                    pesos.masDe60kg++;
+                }
+
+                actualizarEstadisticas();
+                pesoInput.value = '';
+            }
+        }
+
+        function actualizarEstadisticas() {
+            document.getElementById('menosDe40kg').textContent = pesos.menosDe40kg;
+            document.getElementById('entre40y50kg').textContent = pesos.entre40y50kg;
+            document.getElementById('entre50y60kg').textContent = pesos.entre50y60kg;
+            document.getElementById('masDe60kg').textContent = pesos.masDe60kg;
+        }
+    </script>
+    <body>
+        <h1>Calculadora de Interés de Cuenta de Ahorros</h1>
+    
+        <label for="montoInicial">Monto Inicial (Bs):</label>
+        <input type="number" id="montoInicial" min="0"><br><br>
+    
+        <label for="ingresoMensual">Ingreso Mensual (Bs):</label>
+        <input type="number" id="ingresoMensual" min="0"><br><br>
+    
+        <button onclick="calcularInteres()">Calcular Interés</button><br><br>
+    
+        <h2>Resultado</h2>
+        <p>El monto acumulado a fin de año es: <span id="resultado">0</span> Bs</p>
+    
+        <script>
+            function calcularInteres() {
+                const montoInicial = parseFloat(document.getElementById('montoInicial').value);
+                const ingresoMensual = parseFloat(document.getElementById('ingresoMensual').value);
+    
+                if (!isNaN(montoInicial) && !isNaN(ingresoMensual)) {
+                    const tasaMensual = 0.0125; // 1.25% mensual
+                    let montoAcumulado = montoInicial;
+    
+                    for (let i = 1; i <= 12; i++) {
+                        montoAcumulado = montoAcumulado + ingresoMensual;
+                        montoAcumulado = montoAcumulado * (1 + tasaMensual);
+                    }
+    
+                    document.getElementById('resultado').textContent = montoAcumulado.toFixed(2) + " Bs";
+                } else {
+                    alert("Por favor, ingrese valores válidos.");
+                }
+            }
+        </script>
+    </body>
+</body>
+</html>

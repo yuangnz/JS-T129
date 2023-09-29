@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ingreso y Cálculo de Notas</title>
+</head>
+<body>
+    <h1>Ingreso y Cálculo de Notas</h1>
+    <form id="formulario">
+        <label for="cedula">Número de Cédula:</label>
+        <input type="text" id="cedula" required><br><br>
+
+        <label for="nombre">Nombre del Alumno:</label>
+        <input type="text" id="nombre" required><br><br>
+
+        <label for="matematicas">Nota de Matemáticas:</label>
+        <input type="number" id="matematicas" min="0" max="10" required><br><br>
+
+        <label for="fisica">Nota de Física:</label>
+        <input type="number" id="fisica" min="0" max="10" required><br><br>
+
+        <label for="programacion">Nota de Programación:</label>
+        <input type="number" id="programacion" min="0" max="10" required><br><br>
+
+        <input type="submit" value="Guardar Datos">
+    </form>
+
+    <h2>Resultados</h2>
+    <p>Promedio Matemáticas: <span id="promedioMatematicas"></span></p>
+    <p>Promedios Física: <span id="promedioFisica"></span></p>
+    <p>Promedio Programación: <span id="promedioProgramacion"></span></p>
+    <p>Alumnos Aprobados en Matemáticas: <span id="aprobadosMatematicas"></span></p>
+    <p>Alumnos Aprobados en Física: <span id="aprobadosFisica"></span></p>
+    <p>Alumnos Aprobados en Programación: <span id="aprobadosProgramacion"></span></p>
+    <p>Alumnos Aplazados en Matemáticas: <span id="aplazadosMatematicas"></span></p>
+    <p>Alumnos Aplazados en Física: <span id="aplazadosFisica"></span></p>
+    <p>Alumnos Aplazados en Programación: <span id="aplazadosProgramacion"></span></p>
+    <p>Alumnos Aprobados en Todas las Materias: <span id="aprobadosTodas"></span></p>
+    <p>Alumnos Aprobados en una Sola Materia: <span id="aprobadosUna"></span></p>
+    <p>Alumnos Aprobados en Dos Materias: <span id="aprobadosDos"></span></p>
+    <p>Nota Máxima Matemáticas: <span id="maximaMatematicas"></span></p>
+    <p>Nota Máxima Física: <span id="maximaFisica"></span></p>
+    <p>Nota Máxima Programación: <span id="maximaProgramacion"></span></p>
+
+    <script>
+        let alumnos = [];
+
+        document.getElementById("formulario").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const cedula = document.getElementById("cedula").value;
+            const nombre = document.getElementById("nombre").value;
+            const matematicas = parseFloat(document.getElementById("matematicas").value);
+            const fisica = parseFloat(document.getElementById("fisica").value);
+            const programacion = parseFloat(document.getElementById("programacion").value);
+
+            const alumno = {
+                cedula: cedula,
+                nombre: nombre,
+                matematicas: matematicas,
+                fisica: fisica,
+                programacion: programacion
+            };
+
+            alumnos.push(alumno);
+
+            // Limpia los campos del formulario
+            document.getElementById("cedula").value = "";
+            document.getElementById("nombre").value = "";
+            document.getElementById("matematicas").value = "";
+            document.getElementById("fisica").value = "";
+            document.getElementById("programacion").value = "";
+
+            // Actualiza los resultados
+            calcularResultados();
+        });
+
+        function calcularResultados() {
+            const numAlumnos = alumnos.length;
+            if (numAlumnos === 0) {
+                return; // No se pueden calcular resultados sin alumnos
+            }
+
+            // Inicializa contadores y variables de nota máxima
+            let promedioMatematicas = 0;
+            let promedioFisica = 0;
+            let promedioProgramacion = 0;
+            let aprobadosMatematicas = 0;
+            let aprobadosFisica = 0;
+            let aprobadosProgramacion = 0;
+            let aplazadosMatematicas = 0;
+            let aplazadosFisica = 0;
+            let aplazadosProgramacion = 0;
+            let aprobadosTodas = 0;
+            let aprobadosUna = 0;
+            let aprobadosDos = 0;
+            let maximaMatematicas = alumnos[0].matematicas;
+            let maximaFisica = alumnos[0].fisica;
+            let maximaProgramacion = alumnos[0].programacion;
+
+            // Recorre los alumnos y realiza los cálculos
+            for (const alumno of alumnos) {
+                promedioMatematicas += alumno.matematicas;
+                promedioFisica += alumno.fisica;
+                promedioProgramacion += alumno.programacion;
+
+                if (alumno.matematicas >= 10) {
+                    aprobadosMatematicas++;
+                } else {
+                    aplazadosMatematicas++;
+                }
+
+                if (alumno.fisica >= 10) {
+                    aprobadosFisica++;
+                } else {
+                    aplazadosFisica++;
+                }
+
+                if (alumno.programacion >= 10) {
+                    aprobadosProgramacion++;
+                } else {
+                    aplazadosProgramacion++;
+                }
+
+                if (alumno.matematicas >= 10 && alumno.fisica >= 10 && alumno.programacion >= 10) {
+                    aprobadosTodas++;
+                }
+                const aprobadas = [alumno.matematicas >= 10, alumno.fisica >= 10, alumno.programacion >= 10];
+                const aprobadasCount = aprobadas.filter(Boolean).length;
+                if (aprobadasCount === 1) {
+                    aprobadosUna++;
+                }
+                if (aprobadasCount === 2) {
+                    aprobadosDos++;
+                }
+                if (alumno.matematicas > maximaMatematicas) {
+                    maximaMatematicas = alumno.matematicas;
+                }
+                if (alumno.fisica > maximaFisica) {
+                    maximaFisica = alumno.fisica;
+                }
+                if (alumno.programacion > maximaProgramacion) {
+                    maximaProgramacion = alumno.programacion;
+                }
+            }
+
+            promedioMatematicas /= numAlumnos;
+            promedioFisica /= numAlumnos;
+            promedioProgramacion /= numAlumnos;
+
+            // Actualiza los resultados en la página
+            document.getElementById("promedioMatematicas").textContent = promedioMatematicas.toFixed(2);
+            document.getElementById("promedioFisica").textContent = promedioFisica.toFixed(2);
+            document.getElementById("promedioProgramacion").textContent = promedioProgramacion.toFixed(2);
+            document.getElementById("aprobadosMatematicas").textContent = aprobadosMatematicas;
+            document.getElementById("aprobadosFisica").textContent = aprobadosFisica;
+            document.getElementById("aprobadosProgramacion").textContent = aprobadosProgramacion;
+            document.getElementById("aplazadosMatematicas").textContent = aplazadosMatematicas; // Nuevo
+            document.getElementById("aplazadosFisica").textContent = aplazadosFisica; // Nuevo
+            document.getElementById("aplazadosProgramacion").textContent = aplazadosProgramacion; // Nuevo
+            document.getElementById("aprobadosTodas").textContent = aprobadosTodas;
+            document.getElementById("aprobadosUna").textContent = aprobadosUna;
+            document.getElementById("aprobadosDos").textContent = aprobadosDos;
+            document.getElementById("maximaMatematicas").textContent = maximaMatematicas;
+            document.getElementById("maximaFisica").textContent = maximaFisica;
+            document.getElementById("maximaProgramacion").textContent = maximaProgramacion;
+        }
+
+    </script>
+</body>
+
+</html>
